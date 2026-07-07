@@ -1,0 +1,95 @@
+{
+  "actions": 0,
+  "capabilities": 71680,
+  "classType": [
+    "image"
+  ],
+  "description": "Top-down human pose estimation using RTMPose (Apache-2.0) via the rtmlib ONNX wrapper. \nRTMDet-nano performs person detection first, then RTMPose predicts 17 COCO keypoints per person crop. \nImage or document in; annotated frame out with the per-person keypoint array attached to the document's metadata. \nv1 is human-only (Sapiens deferred pending license review).",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "pose-estimation.svg",
+  "input": [
+    {
+      "description": "AVI image stream to run pose estimation on.",
+      "lane": "image",
+      "output": [
+        {
+          "description": "Annotated image as raw stream - skeleton + keypoint overlay.",
+          "lane": "image"
+        },
+        {
+          "description": "JSON array of persons: [{label: 'person', box, keypoints: [{name, x, y, score}, ...]}].",
+          "lane": "text"
+        }
+      ]
+    }
+  ],
+  "lanes": {
+    "image": [
+      "text",
+      "image"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "max_persons": {
+          "default": 20,
+          "description": "Cap on persons retained per frame (sorted by detection score). Limits memory + compute on crowd scenes.",
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Max persons per frame",
+          "type": "number"
+        },
+        "profile": {
+          "default": "rtmpose-medium",
+          "enum": [
+            "rtmpose-large",
+            "rtmpose-medium",
+            "rtmpose-tiny"
+          ],
+          "title": "Model",
+          "type": "string"
+        },
+        "threshold": {
+          "default": 0.3,
+          "description": "Minimum per-keypoint confidence (0.0–1.0). Keypoints below this score are skipped when drawing the skeleton.",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Keypoint score threshold",
+          "type": "number"
+        }
+      },
+      "required": [
+        "profile",
+        "threshold",
+        "max_persons"
+      ],
+      "title": "Pose Estimation",
+      "type": "object"
+    },
+    "ui": {
+      "max_persons": {},
+      "profile": {
+        "ui:enumNames": [
+          "RTMPose Large",
+          "RTMPose Medium",
+          "RTMPose Tiny"
+        ]
+      },
+      "threshold": {},
+      "ui:order": [
+        "profile",
+        "threshold",
+        "max_persons"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "pose_estimation",
+  "protocol": "pose_estimation://",
+  "tile": [
+    "Model: ${parameters.pose_estimation.profile}",
+    "Max persons: ${parameters.pose_estimation.max_persons}"
+  ],
+  "title": "Pose Estimation"
+}

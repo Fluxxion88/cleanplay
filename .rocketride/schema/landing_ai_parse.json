@@ -1,0 +1,94 @@
+{
+  "actions": 0,
+  "capabilities": 2048,
+  "classType": [
+    "data"
+  ],
+  "description": "Parses documents with Landing.ai Agentic Document Extraction (ADE), \nextracting clean Markdown text and structured tables from PDFs, images, \nand spreadsheets using the DPT-2 model.",
+  "documentation": "https://docs.landing.ai/ade/ade-python",
+  "icon": "landing_ai.svg",
+  "lanes": {
+    "tags": [
+      "text",
+      "table"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "default": {
+          "object": "default",
+          "properties": {
+            "api_key": {
+              "description": "Your Landing.ai ADE API key. Falls back to the ROCKETRIDE_LANDING_AI_KEY environment variable when left blank.",
+              "title": "API Key",
+              "type": "string"
+            },
+            "model": {
+              "default": "dpt-2-latest",
+              "description": "ADE parse model to use.",
+              "enum": [
+                "dpt-2-latest"
+              ],
+              "title": "Model",
+              "type": "string"
+            },
+            "region": {
+              "default": "production",
+              "description": "Which Landing.ai deployment to call. Use EU for the eu-west-1 data-residency endpoint.",
+              "enum": [
+                "production",
+                "eu"
+              ],
+              "title": "Region",
+              "type": "string"
+            }
+          },
+          "required": [
+            "api_key",
+            "model",
+            "region"
+          ],
+          "type": "object"
+        }
+      },
+      "title": "Landing.ai Parse",
+      "type": "object"
+    },
+    "ui": {
+      "default": {
+        "api_key": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "model": {
+          "ui:enumNames": [
+            "DPT-2 (latest)"
+          ]
+        },
+        "region": {
+          "ui:enumNames": [
+            "US (production)",
+            "EU (eu-west-1)"
+          ]
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "api_key",
+          "model",
+          "region"
+        ]
+      },
+      "ui:order": [
+        "default"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "landing_ai_parse",
+  "protocol": "landing_ai_parse://",
+  "title": "Landing.ai Parse"
+}

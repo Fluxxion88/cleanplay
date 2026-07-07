@@ -1,0 +1,160 @@
+{
+  "actions": 0,
+  "capabilities": 2048,
+  "classType": [
+    "video"
+  ],
+  "description": "Stitches a sequence of image frames into an MP4 video using FFmpeg. \nPlace after any image-producing filter to re-encode matched frames into \na playable video clip.",
+  "icon": "video_composer.svg",
+  "input": [
+    {
+      "description": "Image frames to stitch into a video.",
+      "lane": "image",
+      "output": [
+        {
+          "description": "Encoded MP4 video from the input frames.",
+          "lane": "video"
+        }
+      ]
+    }
+  ],
+  "lanes": {
+    "image": [
+      "video"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "standard"
+                  ]
+                },
+                "standard": {
+                  "object": "standard",
+                  "properties": {
+                    "crf": {
+                      "default": 23,
+                      "description": "Constant Rate Factor for H.264. Lower = better quality, larger file. Range 0-51.",
+                      "maximum": 51,
+                      "minimum": 0,
+                      "title": "Quality (CRF)",
+                      "type": "number"
+                    },
+                    "fps": {
+                      "default": 1,
+                      "description": "Playback speed of the output video. Should match the upstream frame rate.",
+                      "title": "Output frame rate (fps)",
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "fps",
+                    "crf"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            {
+              "properties": {
+                "high": {
+                  "object": "high",
+                  "properties": {
+                    "crf": {
+                      "default": 23,
+                      "description": "Constant Rate Factor for H.264. Lower = better quality, larger file. Range 0-51.",
+                      "maximum": 51,
+                      "minimum": 0,
+                      "title": "Quality (CRF)",
+                      "type": "number"
+                    },
+                    "fps": {
+                      "default": 1,
+                      "description": "Playback speed of the output video. Should match the upstream frame rate.",
+                      "title": "Output frame rate (fps)",
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "fps",
+                    "crf"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "high"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "standard",
+          "description": "Video encoding quality preset",
+          "enum": [
+            "high",
+            "standard"
+          ],
+          "title": "Output quality",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "Video Composer",
+      "type": "object"
+    },
+    "ui": {
+      "high": {
+        "crf": {},
+        "fps": {},
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "fps",
+          "crf"
+        ]
+      },
+      "profile": {
+        "ui:enumNames": [
+          "High quality (H.264, CRF 18)",
+          "Standard quality (H.264, CRF 23)"
+        ]
+      },
+      "standard": {
+        "crf": {},
+        "fps": {},
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "fps",
+          "crf"
+        ]
+      },
+      "ui:order": [
+        "profile",
+        "standard",
+        "high"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "video_composer",
+  "protocol": "video_composer://",
+  "title": "Video Composer"
+}

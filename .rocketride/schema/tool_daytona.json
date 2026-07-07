@@ -1,0 +1,131 @@
+{
+  "actions": 0,
+  "capabilities": 3072,
+  "classType": [
+    "tool"
+  ],
+  "description": "Gives agents an isolated Daytona cloud sandbox for running code and shell commands.\nProvides run_code, run_command, upload_file and download_file on one shared ephemeral sandbox.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "daytona.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "api_url": {
+          "default": "",
+          "description": "Daytona API endpoint. Leave empty for the default cloud (https://app.daytona.io/api); set for self-hosted Daytona.",
+          "title": "API URL",
+          "type": "string"
+        },
+        "apikey": {
+          "default": "",
+          "description": "Daytona API key (app.daytona.io → Keys).",
+          "title": "API Key",
+          "type": "string"
+        },
+        "auto_stop_minutes": {
+          "default": 5,
+          "description": "Sandbox stops (and, being ephemeral, deletes itself) after this many minutes of inactivity: the cost safety net if cleanup is missed.",
+          "maximum": 120,
+          "minimum": 1,
+          "title": "Auto-stop (minutes)",
+          "type": "integer"
+        },
+        "exec_timeout_secs": {
+          "default": 120,
+          "description": "Max seconds a single run_code/run_command call may take.",
+          "maximum": 1200,
+          "minimum": 1,
+          "title": "Execution Timeout (seconds)",
+          "type": "integer"
+        },
+        "language": {
+          "default": "python",
+          "description": "Language runtime for run_code in the sandbox.",
+          "enum": [
+            "python",
+            "javascript",
+            "typescript"
+          ],
+          "title": "Language",
+          "type": "string"
+        },
+        "max_output_chars": {
+          "default": 50000,
+          "description": "Output longer than this is truncated before being returned to the agent.",
+          "maximum": 1000000,
+          "minimum": 1000,
+          "title": "Max Output (characters)",
+          "type": "integer"
+        },
+        "snapshot": {
+          "default": "",
+          "description": "Daytona snapshot to create the sandbox from. Leave empty for the default snapshot.",
+          "title": "Snapshot",
+          "type": "string"
+        },
+        "target": {
+          "default": "",
+          "description": "Sandbox region, e.g. \"us\" or \"eu\". Leave empty for the organization default.",
+          "title": "Target Region",
+          "type": "string"
+        },
+        "type": {
+          "default": "tool_daytona",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "apikey",
+        "language",
+        "auto_stop_minutes",
+        "exec_timeout_secs",
+        "max_output_chars"
+      ],
+      "title": "Daytona",
+      "type": "object"
+    },
+    "ui": {
+      "api_url": {},
+      "apikey": {
+        "ui:secure": true,
+        "ui:widget": "ApiKeyWidget"
+      },
+      "auto_stop_minutes": {},
+      "exec_timeout_secs": {},
+      "language": {
+        "ui:enumNames": [
+          "Python",
+          "JavaScript",
+          "TypeScript"
+        ]
+      },
+      "max_output_chars": {},
+      "snapshot": {},
+      "target": {},
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "apikey",
+        "api_url",
+        "target",
+        "snapshot",
+        "language",
+        "auto_stop_minutes",
+        "exec_timeout_secs",
+        "max_output_chars"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "daytona",
+  "protocol": "tool_daytona://",
+  "tile": [],
+  "title": "Daytona"
+}

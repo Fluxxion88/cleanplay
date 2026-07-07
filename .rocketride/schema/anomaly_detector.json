@@ -1,0 +1,304 @@
+{
+  "actions": 0,
+  "capabilities": 67584,
+  "classType": [
+    "text"
+  ],
+  "description": "A pipeline monitoring component that detects anomalies in numeric output values using \nstatistical methods. It supports Z-Score, IQR (Interquartile Range), and Rolling Average \ndeviation detection with configurable sensitivity and window sizes. Detected anomalies are \nclassified by severity (normal, warning, critical) and added to document metadata.</br>\n</br>\nUse this node to monitor pipeline outputs for unexpected patterns, outliers, or shifts \nin data distribution that may indicate issues requiring attention.",
+  "icon": "util-text.svg",
+  "lanes": {
+    "documents": [
+      "documents"
+    ],
+    "text": [
+      "text"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "z_score"
+                  ]
+                },
+                "z_score": {
+                  "object": "z_score",
+                  "properties": {
+                    "criticalThreshold": {
+                      "default": 3,
+                      "description": "Threshold multiplier for critical-level anomalies",
+                      "maximum": 20,
+                      "minimum": 0.5,
+                      "title": "Critical threshold",
+                      "type": "number"
+                    },
+                    "metric": {
+                      "default": "value",
+                      "description": "The metadata field name containing the numeric value to monitor",
+                      "maxLength": 128,
+                      "minLength": 1,
+                      "title": "Metric field",
+                      "type": "string"
+                    },
+                    "sensitivity": {
+                      "default": 2,
+                      "description": "Detection sensitivity threshold (lower = more sensitive)",
+                      "maximum": 10,
+                      "minimum": 0.1,
+                      "title": "Sensitivity",
+                      "type": "number"
+                    },
+                    "warningThreshold": {
+                      "default": 2,
+                      "description": "Threshold multiplier for warning-level anomalies",
+                      "maximum": 10,
+                      "minimum": 0.1,
+                      "title": "Warning threshold",
+                      "type": "number"
+                    },
+                    "windowSize": {
+                      "default": 100,
+                      "description": "Number of recent values to consider for statistical calculations",
+                      "maximum": 10000,
+                      "minimum": 10,
+                      "title": "Window size",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "sensitivity",
+                    "windowSize",
+                    "metric",
+                    "warningThreshold",
+                    "criticalThreshold"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            {
+              "properties": {
+                "iqr": {
+                  "object": "iqr",
+                  "properties": {
+                    "criticalThreshold": {
+                      "default": 3,
+                      "description": "Threshold multiplier for critical-level anomalies",
+                      "maximum": 20,
+                      "minimum": 0.5,
+                      "title": "Critical threshold",
+                      "type": "number"
+                    },
+                    "metric": {
+                      "default": "value",
+                      "description": "The metadata field name containing the numeric value to monitor",
+                      "maxLength": 128,
+                      "minLength": 1,
+                      "title": "Metric field",
+                      "type": "string"
+                    },
+                    "sensitivity": {
+                      "default": 2,
+                      "description": "Detection sensitivity threshold (lower = more sensitive)",
+                      "maximum": 10,
+                      "minimum": 0.1,
+                      "title": "Sensitivity",
+                      "type": "number"
+                    },
+                    "warningThreshold": {
+                      "default": 2,
+                      "description": "Threshold multiplier for warning-level anomalies",
+                      "maximum": 10,
+                      "minimum": 0.1,
+                      "title": "Warning threshold",
+                      "type": "number"
+                    },
+                    "windowSize": {
+                      "default": 100,
+                      "description": "Number of recent values to consider for statistical calculations",
+                      "maximum": 10000,
+                      "minimum": 10,
+                      "title": "Window size",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "sensitivity",
+                    "windowSize",
+                    "metric",
+                    "warningThreshold",
+                    "criticalThreshold"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "iqr"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "rolling_avg"
+                  ]
+                },
+                "rolling_avg": {
+                  "object": "rolling_avg",
+                  "properties": {
+                    "criticalThreshold": {
+                      "default": 3,
+                      "description": "Threshold multiplier for critical-level anomalies",
+                      "maximum": 20,
+                      "minimum": 0.5,
+                      "title": "Critical threshold",
+                      "type": "number"
+                    },
+                    "metric": {
+                      "default": "value",
+                      "description": "The metadata field name containing the numeric value to monitor",
+                      "maxLength": 128,
+                      "minLength": 1,
+                      "title": "Metric field",
+                      "type": "string"
+                    },
+                    "sensitivity": {
+                      "default": 2,
+                      "description": "Detection sensitivity threshold (lower = more sensitive)",
+                      "maximum": 10,
+                      "minimum": 0.1,
+                      "title": "Sensitivity",
+                      "type": "number"
+                    },
+                    "warningThreshold": {
+                      "default": 2,
+                      "description": "Threshold multiplier for warning-level anomalies",
+                      "maximum": 10,
+                      "minimum": 0.1,
+                      "title": "Warning threshold",
+                      "type": "number"
+                    },
+                    "windowSize": {
+                      "default": 100,
+                      "description": "Number of recent values to consider for statistical calculations",
+                      "maximum": 10000,
+                      "minimum": 10,
+                      "title": "Window size",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "sensitivity",
+                    "windowSize",
+                    "metric",
+                    "warningThreshold",
+                    "criticalThreshold"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "z_score",
+          "description": "Anomaly detection configuration",
+          "enum": [
+            "iqr",
+            "rolling_avg",
+            "z_score"
+          ],
+          "title": "Detection Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "Anomaly Detection",
+      "type": "object"
+    },
+    "ui": {
+      "iqr": {
+        "criticalThreshold": {},
+        "metric": {},
+        "sensitivity": {},
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "sensitivity",
+          "windowSize",
+          "metric",
+          "warningThreshold",
+          "criticalThreshold"
+        ],
+        "warningThreshold": {},
+        "windowSize": {}
+      },
+      "profile": {
+        "ui:enumNames": [
+          "IQR - Interquartile range based detection",
+          "Rolling Average - Moving average deviation detection",
+          "Z-Score - Standard deviation based detection"
+        ]
+      },
+      "rolling_avg": {
+        "criticalThreshold": {},
+        "metric": {},
+        "sensitivity": {},
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "sensitivity",
+          "windowSize",
+          "metric",
+          "warningThreshold",
+          "criticalThreshold"
+        ],
+        "warningThreshold": {},
+        "windowSize": {}
+      },
+      "ui:order": [
+        "profile",
+        "z_score",
+        "iqr",
+        "rolling_avg"
+      ],
+      "z_score": {
+        "criticalThreshold": {},
+        "metric": {},
+        "sensitivity": {},
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "sensitivity",
+          "windowSize",
+          "metric",
+          "warningThreshold",
+          "criticalThreshold"
+        ],
+        "warningThreshold": {},
+        "windowSize": {}
+      }
+    }
+  },
+  "plans": null,
+  "prefix": "anomaly_detector",
+  "protocol": "anomaly_detector://",
+  "title": "Anomaly Detector"
+}

@@ -1,0 +1,124 @@
+{
+  "actions": 0,
+  "capabilities": 1024,
+  "classType": [
+    "database",
+    "tool"
+  ],
+  "description": "Queries the Aparavi data governance platform using AQL (Aparavi Query Language). \nAccepts natural-language questions, generates AQL SELECT statements via the \nconnected LLM, and returns file metadata rows from the Aparavi STORE table. \nSchema is fixed, no dynamic introspection required.",
+  "invoke": {
+    "llm": {
+      "description": "LLM used to generate AQL queries from natural language",
+      "min": 1
+    }
+  },
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "default": {
+                  "object": "default",
+                  "properties": {
+                    "db_description": {
+                      "default": "",
+                      "description": "What is this data used for? Describe its content and purpose, this helps the LLM generate more accurate AQL queries.",
+                      "title": "Data description",
+                      "type": "string"
+                    },
+                    "password": {
+                      "description": "Aparavi login password",
+                      "title": "Password",
+                      "type": "string"
+                    },
+                    "url": {
+                      "default": "",
+                      "description": "Base URL of the Aparavi server, e.g. https://aparavi.example.com",
+                      "title": "Aparavi Server URL",
+                      "type": "string"
+                    },
+                    "user": {
+                      "default": "",
+                      "description": "Aparavi login username",
+                      "title": "Username",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "db_description",
+                    "url",
+                    "user",
+                    "password"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "default"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "default",
+          "enum": [
+            "default"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "Aparavi AQL",
+      "type": "object"
+    },
+    "ui": {
+      "default": {
+        "db_description": {
+          "ui:widget": "textarea"
+        },
+        "password": {
+          "ui:secure": true,
+          "ui:widget": "password"
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "db_description",
+          "url",
+          "user",
+          "password"
+        ],
+        "url": {},
+        "user": {}
+      },
+      "profile": {
+        "ui:enumNames": [
+          "Default"
+        ],
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "profile",
+        "default"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "aparavi",
+  "protocol": "aparavi_aql://",
+  "title": "Aparavi AQL"
+}

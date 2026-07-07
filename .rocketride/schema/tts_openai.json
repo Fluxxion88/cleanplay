@@ -1,0 +1,299 @@
+{
+  "actions": 0,
+  "capabilities": 2048,
+  "classType": [
+    "audio"
+  ],
+  "description": "Converts incoming text into speech using the OpenAI text-to-speech API.\nCalls the vendor API directly from the engine host over HTTPS and emits MP3 bytes on the audio lane.\nModel and voice lists are maintained manually; the API key falls back to the OPENAI_API_KEY environment variable when blank.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "openai.svg",
+  "lanes": {
+    "answers": [
+      "audio"
+    ],
+    "documents": [
+      "audio"
+    ],
+    "questions": [
+      "audio"
+    ],
+    "text": [
+      "audio"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "gpt-4o-mini-tts": {
+                  "object": "gpt-4o-mini-tts",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "voice": {
+                      "default": "alloy",
+                      "description": "OpenAI TTS voice. The newer voices (marin, cedar) require a GPT-4o TTS model.",
+                      "enum": [
+                        "alloy",
+                        "ash",
+                        "ballad",
+                        "coral",
+                        "echo",
+                        "fable",
+                        "onyx",
+                        "nova",
+                        "sage",
+                        "shimmer",
+                        "verse",
+                        "marin",
+                        "cedar"
+                      ],
+                      "title": "Voice",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "voice"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "gpt-4o-mini-tts"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "tts-1"
+                  ]
+                },
+                "tts-1": {
+                  "object": "tts-1",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "voice": {
+                      "default": "alloy",
+                      "description": "OpenAI TTS voice. The newer voices (marin, cedar) require a GPT-4o TTS model.",
+                      "enum": [
+                        "alloy",
+                        "ash",
+                        "ballad",
+                        "coral",
+                        "echo",
+                        "fable",
+                        "onyx",
+                        "nova",
+                        "sage",
+                        "shimmer",
+                        "verse",
+                        "marin",
+                        "cedar"
+                      ],
+                      "title": "Voice",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "voice"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            {
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "tts-1-hd"
+                  ]
+                },
+                "tts-1-hd": {
+                  "object": "tts-1-hd",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "voice": {
+                      "default": "alloy",
+                      "description": "OpenAI TTS voice. The newer voices (marin, cedar) require a GPT-4o TTS model.",
+                      "enum": [
+                        "alloy",
+                        "ash",
+                        "ballad",
+                        "coral",
+                        "echo",
+                        "fable",
+                        "onyx",
+                        "nova",
+                        "sage",
+                        "shimmer",
+                        "verse",
+                        "marin",
+                        "cedar"
+                      ],
+                      "title": "Voice",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "voice"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "gpt-4o-mini-tts",
+          "description": "OpenAI TTS model",
+          "enum": [
+            "gpt-4o-mini-tts",
+            "tts-1",
+            "tts-1-hd"
+          ],
+          "title": "Model",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "OpenAI Text To Speech",
+      "type": "object"
+    },
+    "ui": {
+      "gpt-4o-mini-tts": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "voice"
+        ],
+        "voice": {
+          "ui:enumNames": [
+            "Alloy",
+            "Ash",
+            "Ballad",
+            "Coral",
+            "Echo",
+            "Fable",
+            "Onyx",
+            "Nova",
+            "Sage",
+            "Shimmer",
+            "Verse",
+            "Marin",
+            "Cedar"
+          ]
+        }
+      },
+      "profile": {
+        "ui:enumNames": [
+          "GPT-4o mini TTS - Fast, steerable, multilingual",
+          "TTS-1          - Low latency, standard quality",
+          "TTS-1 HD       - Higher quality, slower"
+        ]
+      },
+      "tts-1": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "voice"
+        ],
+        "voice": {
+          "ui:enumNames": [
+            "Alloy",
+            "Ash",
+            "Ballad",
+            "Coral",
+            "Echo",
+            "Fable",
+            "Onyx",
+            "Nova",
+            "Sage",
+            "Shimmer",
+            "Verse",
+            "Marin",
+            "Cedar"
+          ]
+        }
+      },
+      "tts-1-hd": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "voice"
+        ],
+        "voice": {
+          "ui:enumNames": [
+            "Alloy",
+            "Ash",
+            "Ballad",
+            "Coral",
+            "Echo",
+            "Fable",
+            "Onyx",
+            "Nova",
+            "Sage",
+            "Shimmer",
+            "Verse",
+            "Marin",
+            "Cedar"
+          ]
+        }
+      },
+      "ui:order": [
+        "profile",
+        "gpt-4o-mini-tts",
+        "tts-1",
+        "tts-1-hd"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "tts_openai",
+  "protocol": "tts_openai://",
+  "title": "Text To Speech (OpenAI)"
+}

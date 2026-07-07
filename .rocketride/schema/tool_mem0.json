@@ -1,0 +1,191 @@
+{
+  "actions": 0,
+  "capabilities": 3072,
+  "classType": [
+    "tool"
+  ],
+  "description": "Long-term, shared agent memory exposed as tools, backed by the hosted Mem0 Platform.\nExposes two agent tools: 'remember' stores conversation turns and 'recall' returns the relevant memories. Set your API key and a user id and it works; point several agents at the same project (and ids) to share one memory.",
+  "documentation": "https://docs.mem0.ai",
+  "icon": "mem0.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "show_advanced": {
+          "oneOf": [
+            {
+              "properties": {
+                "agent_id": {
+                  "default": "",
+                  "description": "Optional agent scope. Caution: on the hosted Mem0 platform an agent_id is not reliably stored on the memory but still narrows recall, so setting it can make recalls come back empty. Prefer scoping by user id; leave this empty unless you have verified it works.",
+                  "title": "Agent id",
+                  "type": "string"
+                },
+                "app_id": {
+                  "default": "",
+                  "description": "Optional app scope. Same caveat as Agent id: it narrows recall but is not reliably stored on the hosted platform, so setting it can hide memories. Prefer scoping by user id.",
+                  "title": "App id",
+                  "type": "string"
+                },
+                "base_url": {
+                  "default": "https://api.mem0.ai",
+                  "description": "Mem0 REST API base URL. Defaults to the hosted endpoint; override for self-hosted / enterprise deployments.",
+                  "title": "Base URL",
+                  "type": "string"
+                },
+                "infer": {
+                  "default": true,
+                  "description": "When on (default), Mem0 runs LLM extraction to derive salient facts from the turns. When off, the raw messages are stored verbatim.",
+                  "enum": [
+                    true,
+                    false
+                  ],
+                  "title": "Infer memories",
+                  "type": "boolean"
+                },
+                "ingest_timeout": {
+                  "default": 30,
+                  "description": "Max seconds 'remember' waits/polls for background extraction to finish before returning a 'queued' result.",
+                  "maximum": 120,
+                  "minimum": 1,
+                  "title": "Store timeout (s)",
+                  "type": "integer"
+                },
+                "run_id": {
+                  "default": "",
+                  "description": "Optional session/run scope stamped on stored memories and used to narrow recall. Can be passed by the agent per call.",
+                  "title": "Run id",
+                  "type": "string"
+                },
+                "search_limit": {
+                  "default": 10,
+                  "description": "Maximum number of memory rows to retrieve per recall.",
+                  "maximum": 100,
+                  "minimum": 1,
+                  "title": "Recall limit",
+                  "type": "integer"
+                },
+                "show_advanced": {
+                  "enum": [
+                    true
+                  ]
+                },
+                "wait": {
+                  "default": true,
+                  "description": "When on (default), 'remember' polls Mem0 until background extraction finishes, so a following 'recall' can see the new memory. When off, 'remember' returns immediately and extraction runs in the background.",
+                  "enum": [
+                    true,
+                    false
+                  ],
+                  "title": "Synchronous store",
+                  "type": "boolean"
+                }
+              }
+            },
+            {
+              "properties": {
+                "show_advanced": {
+                  "enum": [
+                    false
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "api_key": {
+          "default": "",
+          "description": "Mem0 Platform API key (m0-...). Get it from the <b>Mem0 dashboard</b>: <a href='https://app.mem0.ai' target='_blank'>app.mem0.ai</a> → API Keys.",
+          "title": "API Key",
+          "type": "string"
+        },
+        "show_advanced": {
+          "default": false,
+          "description": "Show advanced options. The defaults work for most cases, leave off for a simple setup.",
+          "enum": [
+            true,
+            false
+          ],
+          "title": "Advanced settings",
+          "type": "boolean"
+        },
+        "type": {
+          "default": "tool_mem0",
+          "type": "string"
+        },
+        "user_id": {
+          "default": "",
+          "description": "Who this memory belongs to (used to store and recall). Can be passed by the agent per call. At least one scope (user id, or an advanced agent/run/app id) is required.",
+          "title": "User id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "api_key"
+      ],
+      "title": "Mem0",
+      "type": "object"
+    },
+    "ui": {
+      "agent_id": {},
+      "api_key": {
+        "ui:secure": true,
+        "ui:widget": "ApiKeyWidget"
+      },
+      "app_id": {},
+      "base_url": {},
+      "infer": {
+        "ui:enumNames": [
+          "Yes",
+          "No"
+        ]
+      },
+      "ingest_timeout": {},
+      "run_id": {},
+      "search_limit": {},
+      "show_advanced": {
+        "ui:enumNames": [
+          "Yes",
+          "No"
+        ]
+      },
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "api_key",
+        "user_id",
+        "show_advanced",
+        "base_url",
+        "agent_id",
+        "run_id",
+        "app_id",
+        "infer",
+        "wait",
+        "ingest_timeout",
+        "search_limit"
+      ],
+      "user_id": {},
+      "wait": {
+        "ui:enumNames": [
+          "Yes",
+          "No"
+        ]
+      }
+    }
+  },
+  "plans": null,
+  "prefix": "mem0",
+  "protocol": "tool_mem0://",
+  "tile": [
+    "User: ${parameters.mem0.user_id}"
+  ],
+  "title": "Mem0"
+}

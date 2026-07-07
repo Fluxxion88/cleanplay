@@ -1,0 +1,346 @@
+{
+  "actions": 0,
+  "capabilities": 2048,
+  "classType": [
+    "audio"
+  ],
+  "description": "Converts incoming text into speech using the ElevenLabs text-to-speech API.\nCalls the vendor API directly from the engine host over HTTPS and emits MP3 bytes on the audio lane.\nThe model and voice lists are maintained manually; the API key falls back to the ELEVENLABS_API_KEY environment variable when blank.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "elevenlabs.svg",
+  "lanes": {
+    "answers": [
+      "audio"
+    ],
+    "documents": [
+      "audio"
+    ],
+    "questions": [
+      "audio"
+    ],
+    "text": [
+      "audio"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "eleven_multilingual_v2": {
+                  "object": "eleven_multilingual_v2",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "voice": {
+                      "default": "EXAVITQu4vr4xnSDxMaL",
+                      "description": "Premade ElevenLabs voice (voice_id).",
+                      "enum": [
+                        "21m00Tcm4TlvDq8ikWAM",
+                        "AZnzlk1XvdvUeBnXmlld",
+                        "EXAVITQu4vr4xnSDxMaL",
+                        "ErXwobaYiN019PkySvjV",
+                        "MF3mGyEYCl7XYWbV9V6O",
+                        "TxGEqnHWrfWFTfGW9XjX",
+                        "VR6AewLTigWG4xSOukaG",
+                        "pNInz6obpgDQGcFmaJgB",
+                        "yoZ06aMxZJJ28mfd3POQ"
+                      ],
+                      "title": "Voice",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "voice"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "eleven_multilingual_v2"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "eleven_turbo_v2_5": {
+                  "object": "eleven_turbo_v2_5",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "voice": {
+                      "default": "EXAVITQu4vr4xnSDxMaL",
+                      "description": "Premade ElevenLabs voice (voice_id).",
+                      "enum": [
+                        "21m00Tcm4TlvDq8ikWAM",
+                        "AZnzlk1XvdvUeBnXmlld",
+                        "EXAVITQu4vr4xnSDxMaL",
+                        "ErXwobaYiN019PkySvjV",
+                        "MF3mGyEYCl7XYWbV9V6O",
+                        "TxGEqnHWrfWFTfGW9XjX",
+                        "VR6AewLTigWG4xSOukaG",
+                        "pNInz6obpgDQGcFmaJgB",
+                        "yoZ06aMxZJJ28mfd3POQ"
+                      ],
+                      "title": "Voice",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "voice"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "eleven_turbo_v2_5"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "eleven_flash_v2_5": {
+                  "object": "eleven_flash_v2_5",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "voice": {
+                      "default": "EXAVITQu4vr4xnSDxMaL",
+                      "description": "Premade ElevenLabs voice (voice_id).",
+                      "enum": [
+                        "21m00Tcm4TlvDq8ikWAM",
+                        "AZnzlk1XvdvUeBnXmlld",
+                        "EXAVITQu4vr4xnSDxMaL",
+                        "ErXwobaYiN019PkySvjV",
+                        "MF3mGyEYCl7XYWbV9V6O",
+                        "TxGEqnHWrfWFTfGW9XjX",
+                        "VR6AewLTigWG4xSOukaG",
+                        "pNInz6obpgDQGcFmaJgB",
+                        "yoZ06aMxZJJ28mfd3POQ"
+                      ],
+                      "title": "Voice",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "voice"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "eleven_flash_v2_5"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "eleven_v3": {
+                  "object": "eleven_v3",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "voice": {
+                      "default": "EXAVITQu4vr4xnSDxMaL",
+                      "description": "Premade ElevenLabs voice (voice_id).",
+                      "enum": [
+                        "21m00Tcm4TlvDq8ikWAM",
+                        "AZnzlk1XvdvUeBnXmlld",
+                        "EXAVITQu4vr4xnSDxMaL",
+                        "ErXwobaYiN019PkySvjV",
+                        "MF3mGyEYCl7XYWbV9V6O",
+                        "TxGEqnHWrfWFTfGW9XjX",
+                        "VR6AewLTigWG4xSOukaG",
+                        "pNInz6obpgDQGcFmaJgB",
+                        "yoZ06aMxZJJ28mfd3POQ"
+                      ],
+                      "title": "Voice",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "voice"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "eleven_v3"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "eleven_multilingual_v2",
+          "description": "ElevenLabs model",
+          "enum": [
+            "eleven_flash_v2_5",
+            "eleven_multilingual_v2",
+            "eleven_turbo_v2_5",
+            "eleven_v3"
+          ],
+          "title": "Model",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "ElevenLabs Text To Speech",
+      "type": "object"
+    },
+    "ui": {
+      "eleven_flash_v2_5": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "voice"
+        ],
+        "voice": {
+          "ui:enumNames": [
+            "Rachel",
+            "Domi",
+            "Bella",
+            "Antoni",
+            "Elli",
+            "Josh",
+            "Arnold",
+            "Adam",
+            "Sam"
+          ]
+        }
+      },
+      "eleven_multilingual_v2": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "voice"
+        ],
+        "voice": {
+          "ui:enumNames": [
+            "Rachel",
+            "Domi",
+            "Bella",
+            "Antoni",
+            "Elli",
+            "Josh",
+            "Arnold",
+            "Adam",
+            "Sam"
+          ]
+        }
+      },
+      "eleven_turbo_v2_5": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "voice"
+        ],
+        "voice": {
+          "ui:enumNames": [
+            "Rachel",
+            "Domi",
+            "Bella",
+            "Antoni",
+            "Elli",
+            "Josh",
+            "Arnold",
+            "Adam",
+            "Sam"
+          ]
+        }
+      },
+      "eleven_v3": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "voice"
+        ],
+        "voice": {
+          "ui:enumNames": [
+            "Rachel",
+            "Domi",
+            "Bella",
+            "Antoni",
+            "Elli",
+            "Josh",
+            "Arnold",
+            "Adam",
+            "Sam"
+          ]
+        }
+      },
+      "profile": {
+        "ui:enumNames": [
+          "Flash v2.5      - Lowest latency",
+          "Multilingual v2 - High quality, 29 languages",
+          "Turbo v2.5      - Low latency, 32 languages",
+          "Eleven v3       - Most expressive"
+        ]
+      },
+      "ui:order": [
+        "profile",
+        "eleven_multilingual_v2",
+        "eleven_turbo_v2_5",
+        "eleven_flash_v2_5",
+        "eleven_v3"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "tts_elevenlabs",
+  "protocol": "tts_elevenlabs://",
+  "title": "Text To Speech (ElevenLabs)"
+}

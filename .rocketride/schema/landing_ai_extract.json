@@ -1,0 +1,109 @@
+{
+  "actions": 0,
+  "capabilities": 2048,
+  "classType": [
+    "data"
+  ],
+  "description": "Extracts structured fields from parsed Markdown using Landing.ai ADE and a \nJSON Schema you upload. Runs downstream of Landing.ai Parse, consuming the \nMarkdown it produces and emitting the extracted key-value data.",
+  "documentation": "https://docs.landing.ai/ade/ade-python",
+  "icon": "landing_ai.svg",
+  "lanes": {
+    "text": [
+      "answers",
+      "documents"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "default": {
+          "object": "default",
+          "properties": {
+            "api_key": {
+              "description": "Your Landing.ai ADE API key. Falls back to the ROCKETRIDE_LANDING_AI_KEY environment variable when left blank.",
+              "title": "API Key",
+              "type": "string"
+            },
+            "region": {
+              "default": "production",
+              "description": "Which Landing.ai deployment to call. Use EU for the eu-west-1 data-residency endpoint.",
+              "enum": [
+                "production",
+                "eu"
+              ],
+              "title": "Region",
+              "type": "string"
+            },
+            "schema_file": {
+              "description": "Upload a .json file describing the fields to extract. Supports the ADE x-alternativeNames and format keywords.",
+              "format": "data-url",
+              "title": "Extraction Schema (JSON Schema file)",
+              "type": "string"
+            },
+            "strict": {
+              "default": false,
+              "description": "Fail the extraction when the document does not match the schema, instead of returning partial results.",
+              "enum": [
+                true,
+                false
+              ],
+              "title": "Strict",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "api_key",
+            "schema_file",
+            "strict",
+            "region"
+          ],
+          "type": "object"
+        }
+      },
+      "title": "Landing.ai Extract",
+      "type": "object"
+    },
+    "ui": {
+      "default": {
+        "api_key": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "region": {
+          "ui:enumNames": [
+            "US (production)",
+            "EU (eu-west-1)"
+          ]
+        },
+        "schema_file": {
+          "ui:options": {
+            "accept": ".json"
+          }
+        },
+        "strict": {
+          "ui:enumNames": [
+            "Yes",
+            "No"
+          ]
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "api_key",
+          "schema_file",
+          "strict",
+          "region"
+        ]
+      },
+      "ui:order": [
+        "default"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "landing_ai_extract",
+  "protocol": "landing_ai_extract://",
+  "title": "Landing.ai Extract"
+}

@@ -1,0 +1,122 @@
+{
+  "actions": 0,
+  "capabilities": 71680,
+  "classType": [
+    "image"
+  ],
+  "description": "Per-frame object detection. RF-DETR (Apache-2.0, default) is a fast closed-set detector over 80 COCO classes (person, car, dog, etc.). MM-Grounding-DINO (Apache-2.0/BSD-3) is the open-vocab option: type a prompt to detect anything. \nImage in, bounding boxes + labels + centroids out. \nUse as a fast per-frame gate before heavier models. For pixel masks use Segmentation.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "detect.svg",
+  "input": [
+    {
+      "description": "AVI image stream to run detection on.",
+      "lane": "image",
+      "output": [
+        {
+          "description": "Annotated image as raw stream - pipe to any node accepting image input.",
+          "lane": "image"
+        },
+        {
+          "description": "JSON array of detections: [{label, score, box, centroid}].",
+          "lane": "text"
+        }
+      ]
+    }
+  ],
+  "lanes": {
+    "image": [
+      "text",
+      "image"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "rfdetr"
+                  ]
+                },
+                "threshold": {
+                  "default": 0.3,
+                  "description": "Minimum confidence score (0.0–1.0) to include a detection",
+                  "maximum": 1,
+                  "minimum": 0,
+                  "title": "Confidence threshold",
+                  "type": "number"
+                }
+              }
+            },
+            {
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "mmgdino"
+                  ]
+                },
+                "prompt": {
+                  "description": "Example: \"person . car . dog\" (period or comma-separated list) or \"red car\" / \"person in a hat\" (described object). Returns all matching regions. Matches objects and attributes — not spatial relationships, so \"the car on the left\" returns all cars, not just the left one.",
+                  "format": "textarea",
+                  "minLength": 1,
+                  "title": "Detection prompt",
+                  "type": "string"
+                },
+                "threshold": {
+                  "default": 0.3,
+                  "description": "Minimum confidence score (0.0–1.0) to include a detection",
+                  "maximum": 1,
+                  "minimum": 0,
+                  "title": "Confidence threshold",
+                  "type": "number"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "rfdetr",
+          "enum": [
+            "mmgdino",
+            "rfdetr"
+          ],
+          "title": "Model",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "Object Detection",
+      "type": "object"
+    },
+    "ui": {
+      "profile": {
+        "ui:enumNames": [
+          "MM-Grounding-DINO — Open-Vocabulary (any prompt)",
+          "RF-DETR — Common Objects (COCO, 80 classes, default)"
+        ]
+      },
+      "prompt": {},
+      "threshold": {},
+      "ui:order": [
+        "profile",
+        "prompt",
+        "threshold"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "detect",
+  "protocol": "detect://",
+  "tile": [
+    "Model: ${parameters.detect.profile}",
+    "Prompt: ${parameters.detect.prompt}"
+  ],
+  "title": "Object Detection"
+}

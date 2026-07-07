@@ -1,0 +1,130 @@
+{
+  "actions": 0,
+  "capabilities": 68608,
+  "classType": [
+    "tool"
+  ],
+  "description": "Lets agents query a FalkorDB graph database with Cypher.\nProvides query (read-only by default, server-enforced), list_graphs and get_schema.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "falkordb.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "allow_writes": {
+          "default": false,
+          "description": "Permit CREATE/MERGE/SET/DELETE. When off, queries run via GRAPH.RO_QUERY and the server rejects write clauses.",
+          "title": "Allow Writes",
+          "type": "boolean"
+        },
+        "graph": {
+          "default": "agent",
+          "description": "Graph queried when the agent does not pass one explicitly.",
+          "title": "Default Graph",
+          "type": "string"
+        },
+        "host": {
+          "default": "localhost",
+          "description": "FalkorDB host, e.g. localhost or your-instance.falkordb.cloud.",
+          "title": "Host",
+          "type": "string"
+        },
+        "max_rows": {
+          "default": 250,
+          "description": "Upper cap on rows returned to the agent per query.",
+          "maximum": 25000,
+          "minimum": 1,
+          "title": "Max Rows",
+          "type": "integer"
+        },
+        "password": {
+          "default": "",
+          "description": "Password for the FalkorDB instance. Leave empty for no auth.",
+          "title": "Password",
+          "type": "string"
+        },
+        "port": {
+          "default": 6379,
+          "description": "FalkorDB port (Redis protocol).",
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Port",
+          "type": "integer"
+        },
+        "query_timeout_ms": {
+          "default": 30000,
+          "description": "Server-side timeout for a single query.",
+          "maximum": 600000,
+          "minimum": 100,
+          "title": "Query Timeout (ms)",
+          "type": "integer"
+        },
+        "tls": {
+          "default": false,
+          "description": "Connect with TLS (FalkorDB Cloud TLS endpoints).",
+          "title": "TLS",
+          "type": "boolean"
+        },
+        "type": {
+          "default": "tool_falkordb",
+          "type": "string"
+        },
+        "username": {
+          "default": "",
+          "description": "Username, e.g. \"default\" for FalkorDB Cloud. Leave empty for no auth.",
+          "title": "Username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "host",
+        "port",
+        "tls",
+        "graph",
+        "allow_writes",
+        "max_rows",
+        "query_timeout_ms"
+      ],
+      "title": "FalkorDB",
+      "type": "object"
+    },
+    "ui": {
+      "allow_writes": {},
+      "graph": {},
+      "host": {},
+      "max_rows": {},
+      "password": {
+        "ui:secure": true,
+        "ui:widget": "password"
+      },
+      "port": {},
+      "query_timeout_ms": {},
+      "tls": {},
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "host",
+        "port",
+        "username",
+        "password",
+        "tls",
+        "graph",
+        "allow_writes",
+        "max_rows",
+        "query_timeout_ms"
+      ],
+      "username": {}
+    }
+  },
+  "plans": null,
+  "prefix": "falkordb",
+  "protocol": "tool_falkordb://",
+  "tile": [],
+  "title": "FalkorDB"
+}

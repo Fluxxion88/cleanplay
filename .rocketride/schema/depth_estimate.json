@@ -1,0 +1,79 @@
+{
+  "actions": 0,
+  "capabilities": 71680,
+  "classType": [
+    "image"
+  ],
+  "description": "Monocular depth estimation using Depth Anything V2 Small (Apache-2.0). \nOutputs a colorized depth map (red = near, blue = far); depth statistics (min, max, mean) are emitted as JSON on the text lane.\nPair with the Object Detection node to get rough distance to detected objects. \nRuns on CPU, Apple Silicon (MPS), and CUDA.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "depth-estimate.svg",
+  "input": [
+    {
+      "description": "AVI image stream to estimate depth from.",
+      "lane": "image",
+      "output": [
+        {
+          "description": "Colorized depth map as raw stream — red is near, blue is far.",
+          "lane": "image"
+        },
+        {
+          "description": "JSON depth statistics: {min, max, mean}.",
+          "lane": "text"
+        }
+      ]
+    }
+  ],
+  "lanes": {
+    "image": [
+      "text",
+      "image"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "maxEdge": {
+          "default": 1024,
+          "description": "Downscale input so the long edge <= this value before inference; dense output is upsampled back to original. Lower = faster + less VRAM, higher = sharper depth.",
+          "maximum": 4096,
+          "minimum": 256,
+          "title": "Max input edge (px)",
+          "type": "number"
+        },
+        "profile": {
+          "default": "v2-small",
+          "enum": [
+            "v2-small"
+          ],
+          "title": "Model",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile",
+        "maxEdge"
+      ],
+      "title": "Depth Estimation",
+      "type": "object"
+    },
+    "ui": {
+      "maxEdge": {},
+      "profile": {
+        "ui:enumNames": [
+          "Depth Anything V2 Small"
+        ]
+      },
+      "ui:order": [
+        "profile",
+        "maxEdge"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "depth_estimate",
+  "protocol": "depth_estimate://",
+  "tile": [
+    "Model: ${parameters.depth_estimate.profile}"
+  ],
+  "title": "Depth Estimation"
+}

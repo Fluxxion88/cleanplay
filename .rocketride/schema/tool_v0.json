@@ -1,0 +1,55 @@
+{
+  "actions": 0,
+  "capabilities": 68608,
+  "classType": [
+    "tool"
+  ],
+  "description": "A component that connects to Vercel's v0 API to generate React + Tailwind CSS UI \ncomponents from natural-language prompts. Supports generate_ui (create a new component \nfrom a description) and refine_ui (iterate on a previous generation with follow-up \ninstructions). Experimental: API availability and behavior may change.",
+  "icon": "vercel.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "apikey": {
+          "default": "",
+          "description": "Vercel v0 API key",
+          "title": "API Key",
+          "type": "string"
+        },
+        "type": {
+          "default": "tool_v0",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "apikey"
+      ],
+      "title": "v0 by Vercel",
+      "type": "object"
+    },
+    "ui": {
+      "apikey": {
+        "ui:secure": true,
+        "ui:widget": "ApiKeyWidget"
+      },
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "apikey"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "v0",
+  "protocol": "tool_v0://",
+  "tile": [
+    "Tool: v0 UI Generation"
+  ],
+  "title": "v0 by Vercel"
+}

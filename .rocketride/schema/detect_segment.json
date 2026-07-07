@@ -1,0 +1,132 @@
+{
+  "actions": 0,
+  "capabilities": 71680,
+  "classType": [
+    "image"
+  ],
+  "description": "Pixel-level segmentation with HuggingFace-native engines: \nMask2Former-instance (MIT, default) for closed-set instance masks; \nMask2Former-semantic (MIT) for per-pixel class maps. \nImage in (single frame or multi-frame via frame_grabber documents); annotated overlay + Masks JSON out.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "segmentation.svg",
+  "input": [
+    {
+      "description": "AVI image stream to segment.",
+      "lane": "image",
+      "output": [
+        {
+          "description": "Annotated image (translucent mask overlay) as raw stream.",
+          "lane": "image"
+        },
+        {
+          "description": "Masks JSON. instance: [{label, score, box, mask}]. semantic: {semantic_map, classes, size}.",
+          "lane": "text"
+        }
+      ]
+    }
+  ],
+  "lanes": {
+    "image": [
+      "text",
+      "image"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "maxEdge": {
+                  "default": 1024,
+                  "description": "Downscale source so long edge <= this value before inference; masks are upsampled back to the source size. Lower = faster + less VRAM.",
+                  "maximum": 4096,
+                  "minimum": 256,
+                  "title": "Max input edge (px)",
+                  "type": "number"
+                },
+                "profile": {
+                  "enum": [
+                    "mask2former-instance"
+                  ]
+                },
+                "threshold": {
+                  "default": 0.3,
+                  "description": "Minimum score (0.0-1.0) to include a mask",
+                  "maximum": 1,
+                  "minimum": 0,
+                  "title": "Confidence threshold",
+                  "type": "number"
+                }
+              }
+            },
+            {
+              "properties": {
+                "maxEdge": {
+                  "default": 1024,
+                  "description": "Downscale source so long edge <= this value before inference; masks are upsampled back to the source size. Lower = faster + less VRAM.",
+                  "maximum": 4096,
+                  "minimum": 256,
+                  "title": "Max input edge (px)",
+                  "type": "number"
+                },
+                "profile": {
+                  "enum": [
+                    "mask2former-semantic"
+                  ]
+                },
+                "threshold": {
+                  "default": 0.3,
+                  "description": "Minimum score (0.0-1.0) to include a mask",
+                  "maximum": 1,
+                  "minimum": 0,
+                  "title": "Confidence threshold",
+                  "type": "number"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "mask2former-instance",
+          "description": "Segmentation preset. Runs on CPU/MPS/CUDA via transformers.",
+          "enum": [
+            "mask2former-instance",
+            "mask2former-semantic"
+          ],
+          "title": "Profile",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "Segmentation",
+      "type": "object"
+    },
+    "ui": {
+      "maxEdge": {},
+      "profile": {
+        "ui:enumNames": [
+          "Mask2Former — Object Instances (COCO, 80 classes, default)",
+          "Mask2Former — Scene Regions (ADE20K, 150 classes)"
+        ]
+      },
+      "threshold": {},
+      "ui:order": [
+        "profile",
+        "threshold",
+        "maxEdge"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "detect_segment",
+  "protocol": "detect_segment://",
+  "tile": [
+    "Mode: ${parameters.detect_segment.mode}",
+    "Engine: ${parameters.detect_segment.engine}"
+  ],
+  "title": "Segmentation"
+}

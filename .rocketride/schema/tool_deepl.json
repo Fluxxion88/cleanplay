@@ -1,0 +1,108 @@
+{
+  "actions": 0,
+  "capabilities": 68608,
+  "classType": [
+    "tool"
+  ],
+  "description": "Exposes DeepL translation and AI rephrasing as agent tools.\nTranslates text into a target language or rewrites it in a chosen style or tone via the DeepL API, returning the result plus the detected source language.",
+  "icon": "deepl.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "apikey": {
+          "default": "",
+          "description": "DeepL API key (from https://www.deepl.com/pro-api). A key ending in :fx is a Free-tier key and is routed to api-free.deepl.com automatically.",
+          "title": "API Key",
+          "type": "string"
+        },
+        "formality": {
+          "default": "default",
+          "description": "Default formality for translation. Only honored by a subset of target languages; DeepL returns an error for unsupported ones, which the node surfaces.",
+          "enum": [
+            "default",
+            "more",
+            "less",
+            "prefer_more",
+            "prefer_less"
+          ],
+          "title": "Formality",
+          "type": "string"
+        },
+        "modelType": {
+          "default": "",
+          "description": "Translation model to request. Empty lets DeepL choose its default. quality_optimized favors quality, latency_optimized favors speed, prefer_quality_optimized uses quality where available and otherwise falls back.",
+          "enum": [
+            "",
+            "latency_optimized",
+            "quality_optimized",
+            "prefer_quality_optimized"
+          ],
+          "title": "Model Type",
+          "type": "string"
+        },
+        "targetLang": {
+          "default": "EN-US",
+          "description": "Default target language for translation when the agent does not supply one. Regional variants are allowed (e.g. EN-US, EN-GB, PT-BR, PT-PT, ZH-HANS, ZH-HANT).",
+          "title": "Default Target Language",
+          "type": "string"
+        },
+        "type": {
+          "default": "tool_deepl",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "apikey",
+        "targetLang",
+        "formality",
+        "modelType"
+      ],
+      "title": "DeepL",
+      "type": "object"
+    },
+    "ui": {
+      "apikey": {
+        "ui:secure": true,
+        "ui:widget": "ApiKeyWidget"
+      },
+      "formality": {
+        "ui:enumNames": [
+          "Default",
+          "More formal",
+          "Less formal",
+          "Prefer more formal",
+          "Prefer less formal"
+        ]
+      },
+      "modelType": {
+        "ui:enumNames": [
+          "(let DeepL choose)",
+          "Latency optimized",
+          "Quality optimized",
+          "Prefer quality optimized"
+        ]
+      },
+      "targetLang": {},
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "apikey",
+        "targetLang",
+        "formality",
+        "modelType"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "deepl",
+  "protocol": "tool_deepl://",
+  "tile": [],
+  "title": "DeepL"
+}

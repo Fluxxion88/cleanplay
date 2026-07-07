@@ -1,0 +1,340 @@
+{
+  "actions": 0,
+  "capabilities": 3072,
+  "classType": [
+    "llm"
+  ],
+  "description": "A component that connects to Baidu Qianfan ERNIE large language models through \nQianfan's OpenAI-compatible chat-completions API. It supports chat-based text generation, \nquestion answering, summarization, and Chinese-language enterprise AI workflows with configurable \nAPI keys and base URLs.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "baidu-qianfan.svg",
+  "lanes": {
+    "questions": [
+      "answers"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "ernie-4-5-turbo-128k": {
+                  "object": "ernie-4-5-turbo-128k",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "modelSource": {
+                      "title": "Model source",
+                      "type": "string"
+                    },
+                    "serverbase": {
+                      "default": "https://qianfan.baidubce.com/v2",
+                      "description": "Qianfan OpenAI-compatible API endpoint.",
+                      "enum": [
+                        "https://qianfan.baidubce.com/v2",
+                        "https://api.baiduqianfan.ai/v1"
+                      ],
+                      "title": "Base URL",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "serverbase"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "ernie-4-5-turbo-128k"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "ernie-4-5-turbo-32k": {
+                  "object": "ernie-4-5-turbo-32k",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "modelSource": {
+                      "title": "Model source",
+                      "type": "string"
+                    },
+                    "serverbase": {
+                      "default": "https://qianfan.baidubce.com/v2",
+                      "description": "Qianfan OpenAI-compatible API endpoint.",
+                      "enum": [
+                        "https://qianfan.baidubce.com/v2",
+                        "https://api.baiduqianfan.ai/v1"
+                      ],
+                      "title": "Base URL",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "serverbase"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "ernie-4-5-turbo-32k"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "ernie-5-0-thinking-preview": {
+                  "object": "ernie-5-0-thinking-preview",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "modelSource": {
+                      "title": "Model source",
+                      "type": "string"
+                    },
+                    "serverbase": {
+                      "default": "https://qianfan.baidubce.com/v2",
+                      "description": "Qianfan OpenAI-compatible API endpoint.",
+                      "enum": [
+                        "https://qianfan.baidubce.com/v2",
+                        "https://api.baiduqianfan.ai/v1"
+                      ],
+                      "title": "Base URL",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey",
+                    "serverbase"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "ernie-5-0-thinking-preview"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "custom": {
+                  "object": "custom",
+                  "properties": {
+                    "apikey": {
+                      "description": "Enter your API key or token",
+                      "title": "API key (Token)",
+                      "type": "string"
+                    },
+                    "model": {
+                      "description": "Baidu Qianfan model name",
+                      "title": "Model",
+                      "type": "string"
+                    },
+                    "modelOutputTokens": {
+                      "description": "Maximum generated tokens",
+                      "title": "Output Tokens",
+                      "type": "number"
+                    },
+                    "modelSource": {
+                      "title": "Model source",
+                      "type": "string"
+                    },
+                    "modelTotalTokens": {
+                      "description": "Maximum context length in tokens",
+                      "title": "Tokens",
+                      "type": "number"
+                    },
+                    "serverbase": {
+                      "default": "https://qianfan.baidubce.com/v2",
+                      "description": "Qianfan OpenAI-compatible API endpoint.",
+                      "enum": [
+                        "https://qianfan.baidubce.com/v2",
+                        "https://api.baiduqianfan.ai/v1"
+                      ],
+                      "title": "Base URL",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "modelTotalTokens",
+                    "modelOutputTokens",
+                    "serverbase",
+                    "apikey"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "custom"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "ernie-4-5-turbo-128k",
+          "description": "Baidu Qianfan model selection",
+          "enum": [
+            "custom",
+            "ernie-4-5-turbo-128k",
+            "ernie-4-5-turbo-32k",
+            "ernie-5-0-thinking-preview"
+          ],
+          "title": "Model",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "Baidu Qianfan",
+      "type": "object"
+    },
+    "ui": {
+      "custom": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "model": {},
+        "modelOutputTokens": {},
+        "modelSource": {
+          "ui:widget": "hidden"
+        },
+        "modelTotalTokens": {},
+        "serverbase": {
+          "ui:enumNames": [
+            "China (default)",
+            "International"
+          ]
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "model",
+          "modelTotalTokens",
+          "modelOutputTokens",
+          "serverbase",
+          "apikey",
+          "modelSource"
+        ]
+      },
+      "ernie-4-5-turbo-128k": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "modelSource": {
+          "ui:widget": "hidden"
+        },
+        "serverbase": {
+          "ui:enumNames": [
+            "China (default)",
+            "International"
+          ]
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "serverbase",
+          "modelSource"
+        ]
+      },
+      "ernie-4-5-turbo-32k": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "modelSource": {
+          "ui:widget": "hidden"
+        },
+        "serverbase": {
+          "ui:enumNames": [
+            "China (default)",
+            "International"
+          ]
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "serverbase",
+          "modelSource"
+        ]
+      },
+      "ernie-5-0-thinking-preview": {
+        "apikey": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "modelSource": {
+          "ui:widget": "hidden"
+        },
+        "serverbase": {
+          "ui:enumNames": [
+            "China (default)",
+            "International"
+          ]
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "apikey",
+          "serverbase",
+          "modelSource"
+        ]
+      },
+      "profile": {
+        "ui:enumNames": [
+          "Custom",
+          "ERNIE 4.5 Turbo 128K",
+          "ERNIE 4.5 Turbo 32K",
+          "ERNIE 5.0 Thinking Preview"
+        ]
+      },
+      "ui:order": [
+        "profile",
+        "ernie-4-5-turbo-128k",
+        "ernie-4-5-turbo-32k",
+        "ernie-5-0-thinking-preview",
+        "custom"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "llm",
+  "protocol": "llm_baidu_qianfan://",
+  "tile": [
+    "Model: ${parameters.llm_baidu_qianfan.profile}"
+  ],
+  "title": "Baidu Qianfan"
+}

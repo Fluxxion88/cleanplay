@@ -1,0 +1,81 @@
+{
+  "actions": 0,
+  "capabilities": 3072,
+  "classType": [
+    "tool"
+  ],
+  "description": "Exposes Apify Actors as agent tools.\nProvides run_actor (run an Actor and return its dataset) and get_dataset_items.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "apify.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "apikey": {
+          "default": "",
+          "description": "Apify API token",
+          "title": "API Token",
+          "type": "string"
+        },
+        "max_cost_usd": {
+          "default": 1,
+          "description": "Spend limit per run for pay-per-event Actors.",
+          "title": "Max Cost (USD)",
+          "type": "number"
+        },
+        "max_items": {
+          "default": 100,
+          "description": "Upper cap on items returned per call (agent requests are clamped to this).",
+          "title": "Max Items",
+          "type": "integer"
+        },
+        "run_timeout_secs": {
+          "default": 120,
+          "description": "Max seconds an Actor run may take before it is stopped.",
+          "title": "Run Timeout (seconds)",
+          "type": "integer"
+        },
+        "type": {
+          "default": "tool_apify",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "apikey",
+        "max_items",
+        "run_timeout_secs",
+        "max_cost_usd"
+      ],
+      "title": "Apify",
+      "type": "object"
+    },
+    "ui": {
+      "apikey": {
+        "ui:secure": true,
+        "ui:widget": "ApiKeyWidget"
+      },
+      "max_cost_usd": {},
+      "max_items": {},
+      "run_timeout_secs": {},
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "apikey",
+        "max_items",
+        "run_timeout_secs",
+        "max_cost_usd"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "apify",
+  "protocol": "tool_apify://",
+  "tile": [],
+  "title": "Apify"
+}

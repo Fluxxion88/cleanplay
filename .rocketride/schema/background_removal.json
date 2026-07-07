@@ -1,0 +1,107 @@
+{
+  "actions": 0,
+  "capabilities": 71680,
+  "classType": [
+    "image"
+  ],
+  "description": "Foreground / background separation using BiRefNet (MIT). Returns an RGBA cutout with a straight (non-premultiplied) alpha channel, so downstream nodes can re-composite over any background without dark fringes. \nTwo profiles are shipped: the default 1K BiRefNet and a higher-resolution 2K variant for fine hair / detailed edges. Runs on CPU, Apple Silicon (MPS), and CUDA.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "background-removal.svg",
+  "input": [
+    {
+      "description": "AVI image stream to remove the background from.",
+      "lane": "image",
+      "output": [
+        {
+          "description": "RGBA PNG (straight alpha) as raw stream — pipe to any node accepting image input.",
+          "lane": "image"
+        },
+        {
+          "description": "JSON alpha stats: {mean_alpha, alpha_coverage_pct}.",
+          "lane": "text"
+        }
+      ]
+    }
+  ],
+  "lanes": {
+    "image": [
+      "text",
+      "image"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "birefnet-default"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "profile": {
+                  "enum": [
+                    "birefnet-hr"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "maxEdge": {
+          "default": 1024,
+          "description": "Downscale source so long edge <= this value before inference; alpha is upsampled back to the (capped) source size for compositing. Lower = faster + less VRAM; higher = sharper edges.",
+          "maximum": 4096,
+          "minimum": 256,
+          "title": "Max input edge (px)",
+          "type": "number"
+        },
+        "profile": {
+          "default": "birefnet-default",
+          "description": "BiRefNet variant — default is 1K, HR is 2K for finer edges.",
+          "enum": [
+            "birefnet-default",
+            "birefnet-hr"
+          ],
+          "title": "Model",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile",
+        "maxEdge"
+      ],
+      "title": "Background Removal",
+      "type": "object"
+    },
+    "ui": {
+      "maxEdge": {},
+      "profile": {
+        "ui:enumNames": [
+          "BiRefNet — default, 1K (MIT)",
+          "BiRefNet HR — 2K, finer hair / edge detail (MIT)"
+        ]
+      },
+      "ui:order": [
+        "profile",
+        "maxEdge"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "background_removal",
+  "protocol": "background_removal://",
+  "tile": [
+    "Model: ${parameters.background_removal.profile}",
+    "Max edge: ${parameters.background_removal.maxEdge}"
+  ],
+  "title": "Background Removal"
+}
