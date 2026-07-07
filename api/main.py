@@ -258,7 +258,9 @@ async def upgrade(body: dict = Body(default={}), user: dict = Depends(require_us
             sess = await billing.stripe_subscribe(
                 c, user["token"], pro["id"],
                 success_url=f"{origin}/?upgraded=1", cancel_url=f"{origin}/?upgraded=0")
-            return {"mode": "stripe", "checkout_url": sess.get("url"), "pro_plan": pro}
+            return {"mode": "stripe", "checkout_url": sess.get("url"),
+                    "session_id": sess.get("sessionId") or sess.get("session_id"),
+                    "pro_plan": pro}
         # Fallback: metered upgrade (demo never breaks).
         ws = await billing.upgrade(c, user["user_id"], user["email"],
                                    pro.get("id") if pro else None)
