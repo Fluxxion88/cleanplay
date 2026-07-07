@@ -56,9 +56,16 @@ async def require_user(
 
 
 async def login(email: str, password: str) -> dict:
-    """Proxy to Butterbase login; returns the token payload."""
+    """Proxy to Butterbase login; surfaces the real upstream failure."""
     async with httpx.AsyncClient(timeout=30.0) as c:
         r = await c.post(f"{AUTH_BASE}/login", json={"email": email, "password": password})
-    if r.status_code != 200:
+    if r.status_code == 200:
+        return r.json()
+    if r.status_code == 429:
+        raise HTTPException(status_code=429,
+                            detail="Too many login attempts — wait a minute and retry.")
+    if r.status_code in (400, 401, 403):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    return r.json()
+    # anything else: don't mask it as bad credentials
+    raise HTTPException(status_code=502,
+                        detail=f"Auth upstream error {r.status_code}: {r.text[:200]}")
