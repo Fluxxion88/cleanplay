@@ -49,7 +49,10 @@ async def require_user(
         claims = verify_token(creds.credentials)
     except ValueError as e:
         raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
-    return {"user_id": claims["sub"], "email": claims.get("email")}
+    # Keep the raw token so endpoints can act as this end-user against Butterbase
+    # (e.g. Stripe subscribe requires the app JWT, not the service key).
+    return {"user_id": claims["sub"], "email": claims.get("email"),
+            "token": creds.credentials}
 
 
 async def login(email: str, password: str) -> dict:

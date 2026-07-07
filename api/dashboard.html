@@ -143,17 +143,42 @@ const H = () => ({'Content-Type':'application/json','Authorization':'Bearer '+TO
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('hidden');
   clearTimeout(t._t); t._t=setTimeout(()=>t.classList.add('hidden'),4200); }
 
+async function showApp(email){
+  if(email) $('who').textContent = email;
+  $('login').classList.add('hidden'); $('app').classList.remove('hidden');
+  await Promise.all([refreshMe(), loadDevices(), loadHistory()]);
+  // returning from Stripe Checkout success -> confirm subscription
+  const p = new URLSearchParams(location.search);
+  if(p.get('upgraded')==='1'){
+    const d = await (await fetch('/upgrade/confirm',{method:'POST',headers:H()})).json();
+    toast(d.confirmed ? '✅ Stripe payment confirmed — upgraded to PRO' : 'Returned from Stripe (subscription pending)');
+    await refreshMe();
+    history.replaceState({}, '', location.pathname);
+  }
+}
+
 async function login(){
   $('loginErr').textContent='';
   const r = await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({email:$('email').value,password:$('password').value})});
   if(!r.ok){ $('loginErr').textContent='Invalid credentials'; return; }
   const d = await r.json(); TOKEN = d.access_token;
-  $('who').textContent = d.user.email;
-  $('login').classList.add('hidden'); $('app').classList.remove('hidden');
-  await Promise.all([refreshMe(), loadDevices(), loadHistory()]);
+  localStorage.setItem('cp_token', TOKEN);
+  localStorage.setItem('cp_email', d.user.email);
+  await showApp(d.user.email);
 }
-function logout(){ TOKEN=null; location.reload(); }
+function logout(){ TOKEN=null; localStorage.removeItem('cp_token'); localStorage.removeItem('cp_email');
+  location.href = location.pathname; }
+
+async function init(){
+  const t = localStorage.getItem('cp_token');
+  if(!t) return;                       // show login
+  // validate the stored token before trusting it
+  TOKEN = t;
+  const r = await fetch('/api/me',{headers:H()});
+  if(r.ok){ await showApp(localStorage.getItem('cp_email')); }
+  else { TOKEN=null; localStorage.removeItem('cp_token'); }
+}
 
 async function refreshMe(){
   const d = await (await fetch('/api/me',{headers:H()})).json();
@@ -216,7 +241,14 @@ async function simulate(){
 }
 
 async function upgrade(){
-  const d = await (await fetch('/upgrade',{method:'POST',headers:H()})).json();
+  const r = await fetch('/upgrade',{method:'POST',headers:H(),
+    body:JSON.stringify({origin: location.origin})});
+  const d = await r.json();
+  if(d.mode==='stripe' && d.checkout_url){
+    toast('Redirecting to Stripe Checkout (test card 4242 4242 4242 4242) …');
+    location.href = d.checkout_url;          // return lands on /?upgraded=1
+    return;
+  }
   toast('✅ Upgraded to PRO — unlimited scans');
   await refreshMe();
 }
@@ -232,6 +264,7 @@ async function loadHistory(){
 
 // Enter-to-login
 $('password').addEventListener('keydown',e=>{ if(e.key==='Enter') login(); });
+init();  // restore session (and confirm Stripe return) on load
 </script>
 </body>
 </html>

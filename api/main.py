@@ -249,15 +249,37 @@ async def simulate_new_account(device_id: str, user: dict = Depends(require_user
 
 
 @app.post("/upgrade")
-async def upgrade(user: dict = Depends(require_user)) -> dict:
+async def upgrade(body: dict = Body(default={}), user: dict = Depends(require_user)) -> dict:
+    origin = body.get("origin") or os.environ.get("PUBLIC_BASE_URL", "")
     async with httpx.AsyncClient(timeout=30.0) as c:
         pro = await billing.get_pro_plan(c)
+        # Preferred path: real Stripe Checkout (test mode) when enabled + ready.
+        if billing.STRIPE_ENABLED and pro and await billing.connect_ready(c):
+            sess = await billing.stripe_subscribe(
+                c, user["token"], pro["id"],
+                success_url=f"{origin}/?upgraded=1", cancel_url=f"{origin}/?upgraded=0")
+            return {"mode": "stripe", "checkout_url": sess.get("url"), "pro_plan": pro}
+        # Fallback: metered upgrade (demo never breaks).
         ws = await billing.upgrade(c, user["user_id"], user["email"],
                                    pro.get("id") if pro else None)
-    return {"upgraded": True, "usage": billing.usage_view(ws),
+    return {"mode": "metered", "upgraded": True, "usage": billing.usage_view(ws),
             "pro_plan": pro,
-            "note": ("Metered upgrade recorded in Butterbase. Stripe Connect is not "
-                     "onboarded for this app, so no live Checkout was invoked.")}
+            "note": ("Metered upgrade recorded in Butterbase. Live Stripe Checkout was "
+                     "not used (STRIPE_ENABLED off or Connect not ready).")}
+
+
+@app.post("/upgrade/confirm")
+async def upgrade_confirm(user: dict = Depends(require_user)) -> dict:
+    """After returning from Stripe Checkout: confirm the subscription and flip to PRO."""
+    async with httpx.AsyncClient(timeout=30.0) as c:
+        active = await billing.stripe_subscription_active(c, user["token"])
+        if active:
+            pro = await billing.get_pro_plan(c)
+            ws = await billing.upgrade(c, user["user_id"], user["email"],
+                                       pro.get("id") if pro else None)
+            return {"confirmed": True, "usage": billing.usage_view(ws)}
+        ws = await billing.ensure_workspace(c, user["user_id"], user["email"])
+        return {"confirmed": False, "usage": billing.usage_view(ws)}
 
 
 @app.get("/scans")

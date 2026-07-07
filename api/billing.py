@@ -18,6 +18,10 @@ BB_URL = os.environ["BUTTERBASE_API_URL"].rstrip("/")
 BB_KEY = os.environ["BUTTERBASE_API_KEY"]
 BB_HEADERS = {"Authorization": f"Bearer {BB_KEY}", "Content-Type": "application/json"}
 
+# Stripe Checkout (test mode) is used only when explicitly enabled AND Connect
+# onboarding is complete; otherwise /upgrade does the metered flip (never breaks).
+STRIPE_ENABLED = os.environ.get("STRIPE_ENABLED", "false").lower() in ("1", "true", "yes")
+
 FREE_LIMIT = 10
 PRO_LIMIT = 1_000_000  # effectively unlimited
 
@@ -92,6 +96,39 @@ async def get_pro_plan(c: httpx.AsyncClient) -> dict | None:
         return None
     plans = r.json().get("plans", [])
     return plans[0] if plans else None
+
+
+async def connect_ready(c: httpx.AsyncClient) -> bool:
+    """True when the app's Stripe Connect account can accept charges."""
+    try:
+        r = await c.get(f"{BB_URL}/billing/connect/status", headers=BB_HEADERS)
+        return r.status_code == 200 and bool(r.json().get("chargesEnabled"))
+    except Exception:  # noqa: BLE001
+        return False
+
+
+async def stripe_subscribe(c: httpx.AsyncClient, user_token: str, plan_id: str,
+                           success_url: str, cancel_url: str) -> dict:
+    """Start a Stripe Checkout session for the signed-in end-user."""
+    r = await c.post(
+        f"{BB_URL}/billing/subscribe",
+        headers={"Authorization": f"Bearer {user_token}", "Content-Type": "application/json"},
+        json={"planId": plan_id, "successUrl": success_url, "cancelUrl": cancel_url},
+    )
+    r.raise_for_status()
+    return r.json()  # { sessionId, url }
+
+
+async def stripe_subscription_active(c: httpx.AsyncClient, user_token: str) -> bool:
+    """True when the end-user has an active Stripe subscription."""
+    r = await c.get(
+        f"{BB_URL}/billing/subscription",
+        headers={"Authorization": f"Bearer {user_token}", "Content-Type": "application/json"},
+    )
+    if r.status_code != 200:
+        return False
+    sub = r.json().get("subscription")
+    return bool(sub) and sub.get("status") in ("active", "trialing", "complete", "paid")
 
 
 def usage_view(ws: dict) -> dict:

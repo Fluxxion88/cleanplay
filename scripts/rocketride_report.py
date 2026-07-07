@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -17,6 +18,24 @@ ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
 
 PIPE = ROOT / "pipeline" / "cleanplay_score.pipe"
+
+_VAR = re.compile(r"\$\{(ROCKETRIDE_[A-Z0-9_]+)\}")
+
+
+def _subst(obj):
+    """Recursively substitute ${ROCKETRIDE_*} from os.environ (portable: no .env
+    file needed in the container — the SDK's own substitution reads a .env file)."""
+    if isinstance(obj, str):
+        return _VAR.sub(lambda m: os.environ.get(m.group(1), m.group(0)), obj)
+    if isinstance(obj, list):
+        return [_subst(x) for x in obj]
+    if isinstance(obj, dict):
+        return {k: _subst(v) for k, v in obj.items()}
+    return obj
+
+
+def load_pipeline() -> dict:
+    return _subst(json.loads(PIPE.read_text()))
 
 
 def _build_question(scoring: dict):
@@ -77,8 +96,9 @@ async def generate_case_report(scoring: dict) -> dict:
     client = RocketRideClient(uri=uri, auth=auth)
     await client.connect()
     try:
-        # use_existing=True reuses the already-running cloud pipeline instance.
-        result = await client.use(filepath=str(PIPE), use_existing=True)
+        # Substitute ${ROCKETRIDE_*} from os.environ ourselves (portable) and pass
+        # the resolved pipeline dict. use_existing=True reuses the running instance.
+        result = await client.use(pipeline=load_pipeline(), use_existing=True)
         token = result["token"]
         question = _build_question(scoring)
         resp = await client.chat(token=token, question=question)
