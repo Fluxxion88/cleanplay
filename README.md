@@ -2,6 +2,9 @@
 
 **Device-level trust scoring that busts real-money gold-selling rings in online games.**
 
+> **🌐 Live demo:** https://cleanplay-production.up.railway.app
+> **Moderator login:** `moderator@cleanplay.demo` / `CleanPlay!2026`
+
 Gold farmers don't get caught by looking at accounts one at a time — bans just spawn
 new alts. They get caught at the **device and money-flow** level: the same phone
 running two "mule" accounts, the one-directional funnel of gold from a farmer through
