@@ -1,0 +1,28 @@
+{
+	"components": [
+		{
+			"id": "chat_1",
+			"provider": "chat",
+			"config": { "hideForm": true, "mode": "Source", "parameters": {}, "type": "chat" }
+		},
+		{
+			"id": "llm_1",
+			"provider": "llm_anthropic",
+			"config": {
+				"profile": "claude-haiku-4-5",
+				"claude-haiku-4-5": { "apikey": "${ROCKETRIDE_ANTHROPIC_KEY}" },
+				"parameters": {}
+			},
+			"input": [{ "lane": "questions", "from": "chat_1" }]
+		},
+		{
+			"id": "response_1",
+			"provider": "response_answers",
+			"config": {},
+			"input": [{ "lane": "answers", "from": "llm_1" }]
+		}
+	],
+	"project_id": "fea72182-0c48-4848-86b0-8dc6bbb3606b",
+	"viewport": { "x": 0, "y": 0, "zoom": 1 },
+	"version": 1
+}
