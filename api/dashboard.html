@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CleanPlay — Trust &amp; Safety</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2430; --border:#30363d;
+    --txt:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
+    --green:#2ecc71; --orange:#e67e22; --red:#e74c3c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+       font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  h1,h2,h3{margin:0 0 .5rem}
+  button{cursor:pointer;border:1px solid var(--border);background:var(--panel2);
+         color:var(--txt);padding:.5rem .8rem;border-radius:8px;font-size:14px}
+  button:hover{border-color:var(--accent)}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:600}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  input{background:#0b0f14;border:1px solid var(--border);color:var(--txt);
+        padding:.6rem;border-radius:8px;width:100%;font-size:15px}
+  .hidden{display:none!important}
+  .muted{color:var(--muted)}
+  a{color:var(--accent)}
+
+  /* login */
+  #login{max-width:360px;margin:12vh auto;padding:2rem;background:var(--panel);
+         border:1px solid var(--border);border-radius:14px}
+  #login .row{margin:.6rem 0}
+  #loginErr{color:var(--red);min-height:1.2em;font-size:13px}
+
+  /* app */
+  header{display:flex;align-items:center;gap:1rem;padding:.8rem 1.2rem;
+         background:var(--panel);border-bottom:1px solid var(--border);position:sticky;top:0}
+  header .brand{font-weight:700;font-size:18px}
+  header .spacer{flex:1}
+  .plan{display:flex;align-items:center;gap:.6rem;background:var(--panel2);
+        border:1px solid var(--border);border-radius:10px;padding:.4rem .7rem;font-size:13px}
+  .bar{width:120px;height:8px;background:#0b0f14;border-radius:6px;overflow:hidden}
+  .bar > i{display:block;height:100%;background:var(--accent)}
+  .wrap{display:grid;grid-template-columns:320px 1fr;gap:1rem;padding:1rem 1.2rem;
+        max-width:1200px;margin:0 auto}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1rem}
+  .devrow{display:flex;align-items:center;gap:.5rem;padding:.45rem .3rem;
+          border-bottom:1px solid var(--border)}
+  .devrow .id{font-family:ui-monospace,Menlo,monospace}
+  .devrow .meta{font-size:12px;color:var(--muted)}
+  .devrow .spacer{flex:1}
+  .badge{padding:.15rem .55rem;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase}
+  .b-trusted{background:rgba(46,204,113,.15);color:var(--green);border:1px solid var(--green)}
+  .b-suspicious{background:rgba(230,126,34,.15);color:var(--orange);border:1px solid var(--orange)}
+  .b-dirty{background:rgba(231,76,60,.15);color:var(--red);border:1px solid var(--red)}
+  .gauge{display:flex;align-items:center;gap:1rem;margin:.5rem 0 1rem}
+  .score{font-size:52px;font-weight:800;line-height:1}
+  .chip{display:inline-block;background:var(--panel2);border:1px solid var(--border);
+        border-radius:6px;padding:.1rem .5rem;margin:.1rem;font-size:12px;
+        font-family:ui-monospace,Menlo,monospace}
+  .report{white-space:pre-wrap;background:#0b0f14;border:1px solid var(--border);
+          border-radius:10px;padding:.9rem;margin:.6rem 0;font-size:14px}
+  .actions{display:flex;gap:.6rem;margin-top:.6rem;flex-wrap:wrap}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid var(--border)}
+  th{color:var(--muted);font-weight:600}
+  .toast{position:fixed;bottom:1rem;right:1rem;background:var(--panel2);
+         border:1px solid var(--accent);border-radius:10px;padding:.7rem 1rem;max-width:360px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <h1>CleanPlay</h1>
+  <p class="muted">Trust &amp; Safety console — moderator sign-in</p>
+  <div class="row"><input id="email" placeholder="email" autocomplete="username"/></div>
+  <div class="row"><input id="password" type="password" placeholder="password" autocomplete="current-password"/></div>
+  <div id="loginErr"></div>
+  <div class="row"><button class="primary" style="width:100%" onclick="login()">Sign in</button></div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <header>
+    <span class="brand">🛡️ CleanPlay</span>
+    <span class="muted" id="who"></span>
+    <span class="spacer"></span>
+    <div class="plan">
+      <span>Plan: <b id="planName">—</b></span>
+      <div class="bar"><i id="planBar" style="width:0"></i></div>
+      <span id="planUsage" class="muted">0/0</span>
+      <button id="upgradeBtn" onclick="upgrade()">Upgrade to PRO</button>
+    </div>
+    <button onclick="logout()">Logout</button>
+  </header>
+
+  <div class="wrap">
+    <div class="panel">
+      <h3>Devices <span class="muted" style="font-size:12px">(ranked by outflow)</span></h3>
+      <div id="devices"></div>
+    </div>
+
+    <div>
+      <div class="panel" id="resultPanel">
+        <h3>Scan result</h3>
+        <p class="muted" id="resultHint">Pick a device and press <b>Scan</b>.</p>
+        <div id="result" class="hidden">
+          <div class="gauge">
+            <div class="score" id="rScore">—</div>
+            <div>
+              <span class="badge" id="rBadge">—</span>
+              <div class="muted" id="rDevice"></div>
+            </div>
+          </div>
+          <div><b>Affected accounts:</b> <span id="rAccounts"></span></div>
+          <div style="margin-top:.4rem"><b>Evidence chain:</b> <span id="rEvidence"></span></div>
+          <div style="margin-top:.6rem"><b>Case report (Claude via RocketRide Cloud):</b></div>
+          <div class="report" id="rReport"></div>
+          <div class="actions">
+            <button onclick="restrict()">🚫 Restrict device</button>
+            <button onclick="simulate()">➕ Simulate new account on device</button>
+          </div>
+          <div id="actionOut" class="muted" style="margin-top:.5rem"></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:1rem">
+        <h3>Scan history <span class="muted" style="font-size:12px">(Butterbase)</span></h3>
+        <table><thead><tr><th>When</th><th>Device</th><th>Score</th><th>Verdict</th><th>Accts</th></tr></thead>
+          <tbody id="history"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+let TOKEN = null, CURRENT = null;
+const $ = id => document.getElementById(id);
+const H = () => ({'Content-Type':'application/json','Authorization':'Bearer '+TOKEN});
+
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('hidden');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.add('hidden'),4200); }
+
+async function login(){
+  $('loginErr').textContent='';
+  const r = await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:$('email').value,password:$('password').value})});
+  if(!r.ok){ $('loginErr').textContent='Invalid credentials'; return; }
+  const d = await r.json(); TOKEN = d.access_token;
+  $('who').textContent = d.user.email;
+  $('login').classList.add('hidden'); $('app').classList.remove('hidden');
+  await Promise.all([refreshMe(), loadDevices(), loadHistory()]);
+}
+function logout(){ TOKEN=null; location.reload(); }
+
+async function refreshMe(){
+  const d = await (await fetch('/api/me',{headers:H()})).json();
+  const u = d.usage;
+  $('planName').textContent = u.plan;
+  $('planUsage').textContent = u.unlimited ? (u.scans_used+' / ∞') : (u.scans_used+' / '+u.scan_limit);
+  $('planBar').style.width = u.unlimited ? '100%' : Math.min(100, 100*u.scans_used/u.scan_limit)+'%';
+  $('upgradeBtn').classList.toggle('hidden', u.plan==='PRO');
+}
+
+async function loadDevices(){
+  const d = await (await fetch('/devices',{headers:H()})).json();
+  $('devices').innerHTML = d.devices.map(v=>`
+    <div class="devrow">
+      <div>
+        <div class="id">${v.device}</div>
+        <div class="meta">${v.n_accounts} acct · out ${v.outflow} · in ${v.inflow}</div>
+      </div>
+      <div class="spacer"></div>
+      <button onclick="scan('${v.device}')">Scan</button>
+    </div>`).join('');
+}
+
+async function scan(id){
+  toast('Scanning '+id+' … (RocketRide Cloud + Claude)');
+  const r = await fetch('/scan/'+id,{method:'POST',headers:H()});
+  if(r.status===402){ const e=await r.json(); toast('⛔ '+e.detail.message);
+    if(confirm(e.detail.message+'\n\nUpgrade to PRO now?')) await upgrade(); return; }
+  if(!r.ok){ toast('Scan failed: '+r.status); return; }
+  const d = await r.json(); CURRENT = id;
+  $('resultHint').classList.add('hidden'); $('result').classList.remove('hidden');
+  $('rScore').textContent = d.score;
+  const col = d.verdict==='trusted'?'var(--green)':d.verdict==='suspicious'?'var(--orange)':'var(--red)';
+  $('rScore').style.color = col;
+  const b=$('rBadge'); b.textContent=d.verdict; b.className='badge b-'+d.verdict;
+  $('rDevice').textContent = 'device '+id + (d.alert_sent?' · 🔔 Discord alert sent':' · no alert');
+  $('rAccounts').innerHTML = d.affected_accounts.map(a=>`<span class="chip">${a}</span>`).join('') || '<span class="muted">none</span>';
+  $('rEvidence').innerHTML = (d.evidence.chains[0]||[]).map(n=>`<span class="chip">${n}</span>`).join(' → ')
+      + (d.evidence.amounts[0]?` <span class="muted">amounts ${d.evidence.amounts[0].join(', ')}</span>`:'')
+      || '<span class="muted">no funnel chain</span>';
+  $('rReport').textContent = d.report_text || '(no report)';
+  $('actionOut').textContent='';
+  await Promise.all([refreshMe(), loadHistory()]);
+}
+
+async function restrict(){
+  if(!CURRENT) return;
+  const d = await (await fetch('/restrict/'+CURRENT,{method:'POST',headers:H()})).json();
+  $('actionOut').textContent = `Restricted ${d.restricted_count} account(s): `+
+      d.restricted_accounts.map(a=>a.name).join(', ');
+  toast('Restricted '+d.restricted_count+' account(s)');
+}
+
+async function simulate(){
+  if(!CURRENT) return;
+  const d = await (await fetch('/simulate_new_account/'+CURRENT,{method:'POST',headers:H()})).json();
+  const s = d.born_restricted ? '🔒 born RESTRICTED' : '🔓 born unrestricted';
+  $('actionOut').textContent = `New account ${d.account.name} on ${CURRENT} → ${s} (latest verdict: ${d.latest_scan_verdict}).`;
+  toast('New account '+s);
+}
+
+async function upgrade(){
+  const d = await (await fetch('/upgrade',{method:'POST',headers:H()})).json();
+  toast('✅ Upgraded to PRO — unlimited scans');
+  await refreshMe();
+}
+
+async function loadHistory(){
+  const d = await (await fetch('/scans',{headers:H()})).json();
+  $('history').innerHTML = d.scans.map(s=>`<tr>
+    <td class="muted">${(s.created_at||'').replace('T',' ').slice(0,19)}</td>
+    <td class="id">${s.device_id}</td><td>${s.score??''}</td>
+    <td><span class="badge b-${s.verdict}">${s.verdict}</span></td>
+    <td>${s.account_count??''}</td></tr>`).join('');
+}
+
+// Enter-to-login
+$('password').addEventListener('keydown',e=>{ if(e.key==='Enter') login(); });
+</script>
+</body>
+</html>

@@ -46,12 +46,38 @@ uvicorn api.main:app --port 8077         # run the API
 python scripts/e2e_verify.py             # drive endpoints a–f (needs the API running)
 ```
 
+## Console: auth, billing, dashboard (Phase 4)
+
+The product sits behind **Butterbase end-user auth** (email/password → RS256 JWT,
+verified in FastAPI via the app's JWKS). Scans are a **metered, billable action**:
+FREE = 10 scans, PRO = unlimited. Usage + plan live in a Butterbase `workspaces`
+table; a real Butterbase billing plan (`CleanPlay PRO`, $25/mo) is the catalog
+object referenced on upgrade. (Stripe Connect isn't onboarded for this app, so
+`/upgrade` records a metered upgrade rather than invoking live Checkout.)
+
+The single-page **dashboard** (dark theme, no build step) is served at `/`: login,
+device suspicion ranking with per-device Scan, a scan result view (score gauge,
+verdict badge, accounts, evidence chain, Claude case report, Restrict / Simulate
+buttons), scan history, and a plan/usage widget with an Upgrade button.
+
+```bash
+uvicorn api.main:app --port 8077        # then open http://127.0.0.1:8077/
+python scripts/e2e_phase4.py            # verify auth + billing + demo flow (needs API running)
+```
+
+**Demo moderator:** `moderator@cleanplay.demo` / `CleanPlay!2026`
+
 ### Endpoints
 
-| Method & path                        | Purpose                                                            |
-| ------------------------------------ | ----------------------------------------------------------------- |
-| `GET  /health`                       | liveness                                                          |
-| `POST /scan/{device_id}`             | score via cloud pipeline, persist to Butterbase, Discord alert if not trusted |
-| `POST /restrict/{device_id}`         | set `restricted=true` on every account that logged in from the device |
-| `POST /simulate_new_account/{device}`| new account on the device — born restricted if latest scan ≠ trusted |
-| `GET  /scans`                        | scan history from Butterbase                                      |
+| Method & path                        | Auth | Purpose                                                     |
+| ------------------------------------ | ---- | ---------------------------------------------------------- |
+| `GET  /`                             | —    | T&S dashboard (single page)                                |
+| `GET  /health`                       | —    | liveness                                                   |
+| `POST /api/login`                    | —    | proxy to Butterbase auth → JWT                             |
+| `GET  /api/me`                       | JWT  | user + plan/usage                                          |
+| `GET  /devices`                      | JWT  | device suspicion ranking                                   |
+| `POST /scan/{device_id}`             | JWT  | metered: cloud score + Butterbase persist + Discord alert  |
+| `POST /restrict/{device_id}`         | JWT  | restrict every account that logged in from the device      |
+| `POST /simulate_new_account/{device}`| JWT  | new account — born restricted if latest scan ≠ trusted     |
+| `POST /upgrade`                      | JWT  | FREE → PRO                                                 |
+| `GET  /scans`                        | JWT  | scan history from Butterbase                               |
